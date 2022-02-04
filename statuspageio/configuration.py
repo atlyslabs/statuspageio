@@ -1,12 +1,10 @@
-from statuspageio.version import VERSION
-from statuspageio.errors import ConfigurationError
 import warnings
+
+from statuspageio.errors import ConfigurationError
+from statuspageio.version import VERSION
 
 
 class Configuration(object):
-
-
-
     def __init__(self, **options):
         """
         :param str api_key: Personal access token.
@@ -17,18 +15,19 @@ class Configuration(object):
         :param bool verify_ssl: (optional) Whether to verify ssl or not. Default: ``True``.
         """
 
-        self.api_key = options.get('api_key')
-        self.page_id = options['page_id']
-        self.organization_id = options['organization_id'] if 'organization_id' in options else False
-        self.base_url = 'https://api.statuspage.io'
-        self.user_agent = 'StatusPage/v1 Python/{0}'.format(VERSION)
-        self.verbose = options['verbose'] if 'verbose' in options else False
-        self.timeout = options['timeout'] if 'timeout' in options else 30
-        self.verify_ssl = options['verify_ssl'] if 'verify_ssl' in options else True
-        
+        self.api_key = options.get("api_key")
+        self.page_id = options["page_id"]
+        self.organization_id = (
+            options["organization_id"] if "organization_id" in options else False
+        )
+        self.base_url = "https://api.statuspage.io"
+        self.user_agent = f"StatusPage/v1 Python/{VERSION}"
+        self.verbose = options["verbose"] if "verbose" in options else False
+        self.timeout = options["timeout"] if "timeout" in options else 30
+        self.verify_ssl = options["verify_ssl"] if "verify_ssl" in options else True
 
         if self.verbose:
-            print "StatusPage client configuration: " + str(self.__dict__)
+            print("StatusPage client configuration: " + str(self.__dict__))
 
     def validate(self):
         """Validates whether a configuration is valid.
@@ -39,20 +38,24 @@ class Configuration(object):
         :warns 'No organization_id provided.' if no ``organization_id`` provided
         """
         if self.api_key is None:
-            raise ConfigurationError('No api_key provided. '
-                                     'Set your access token during client initialization using: '
-                                     '"statuspageio.Client(api_key= <YOUR_PERSONAL_api_key>)"')
-
-
+            raise ConfigurationError(
+                "No api_key provided. "
+                "Set your access token during client initialization using: "
+                '"statuspageio.Client(api_key= <YOUR_PERSONAL_api_key>)"'
+            )
 
         if not self.page_id:
-            raise ConfigurationError('No page_id provided.'
-                                     'Set your page id during client initialization using: '
-                                     '"statuspageiocrm.Client(page_id= <YOUR_PERSONAL_page_id>)"')
-            
+            raise ConfigurationError(
+                "No page_id provided."
+                "Set your page id during client initialization using: "
+                '"statuspageiocrm.Client(page_id= <YOUR_PERSONAL_page_id>)"'
+            )
+
         if not self.organization_id:
-            warnings.warn('No organization_id provided.'
-                          'You will be unable to manage users. Set your organization_id during client initialization using: '
-                          '"statuspageiocrm.Client(organization_id= <YOUR_PERSONAL_page_id>)"')
+            warnings.warn(
+                "No organization_id provided."
+                "You will be unable to manage users. Set your organization_id during client initialization using: "
+                '"statuspageiocrm.Client(organization_id= <YOUR_PERSONAL_page_id>)"'
+            )
 
         return True

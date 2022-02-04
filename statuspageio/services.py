@@ -1,4 +1,3 @@
-
 from statuspageio.errors import ConfigurationError
 
 
@@ -10,7 +9,11 @@ class PageService(object):
     Normally you won't instantiate this class directly.
     """
 
-    OPTS_KEYS_TO_PERSIST = ['name', 'url', 'notifications_from_email', ]
+    OPTS_KEYS_TO_PERSIST = [
+        "name",
+        "url",
+        "notifications_from_email",
+    ]
 
     def __init__(self, http_client, page_id):
         """
@@ -18,7 +21,7 @@ class PageService(object):
         """
 
         self.__http_client = http_client
-        self.container = 'page'
+        self.container = "page"
         self.page_id = page_id
 
     @property
@@ -37,7 +40,7 @@ class PageService(object):
         :return: Dictionary that support attriubte-style access and represents updated Component resource.
         :rtype: dict
         """
-        _, _, page = self.http_client.get('/pages/{page_id}.json'.format(self.page_id))
+        _, _, page = self.http_client.get(f"/pages/{self.page_id}.json")
 
         return page
 
@@ -55,43 +58,43 @@ class PageService(object):
         :rtype: dict
         """
 
-
         OPTS_KEYS_TO_PERSIST = [
-            'name',
-            'url',
-            'notifications_from_email',
-            'time_zone',
-            'city',
-            'state',
-            'country',
-            'subdomain',
-            'domain',
-            'layout',
-            'allow_email_subscribers',
-            'allow_incident_subscribers',
-            'allow_page_subscribers',
-            'allow_sms_subscribers',
-            'hero_cover_url',
-            'transactional_logo_url',
-            'css_body_background_color',
-            'css_font_color',
-            'css_light_font_color',
-            'css_greens',
-            'css_oranges',
-            'css_reds',
-            'css_yellows']
+            "name",
+            "url",
+            "notifications_from_email",
+            "time_zone",
+            "city",
+            "state",
+            "country",
+            "subdomain",
+            "domain",
+            "layout",
+            "allow_email_subscribers",
+            "allow_incident_subscribers",
+            "allow_page_subscribers",
+            "allow_sms_subscribers",
+            "hero_cover_url",
+            "transactional_logo_url",
+            "css_body_background_color",
+            "css_font_color",
+            "css_light_font_color",
+            "css_greens",
+            "css_oranges",
+            "css_reds",
+            "css_yellows",
+        ]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
-        page = self.http_client.patch('/pages/{page_id}.json'.format(self.page_id),
-                                      container=self.container,
-                                      body=attributes)
+        page = self.http_client.patch(
+            f"/pages/{self.page_id}.json", container=self.container, body=attributes
+        )
 
         return page
+
 
 class ComponentsService(object):
     """
@@ -101,7 +104,7 @@ class ComponentsService(object):
     Normally you won't instantiate this class directly.
     """
 
-    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
+    OPTS_KEYS_TO_PERSIST = ["name", "description", "group_id", "status"]
 
     def __init__(self, http_client, page_id):
         """
@@ -110,7 +113,7 @@ class ComponentsService(object):
 
         self.__http_client = http_client
         self.page_id = page_id
-        self.container = 'component'
+        self.container = "component"
 
     @property
     def http_client(self):
@@ -129,10 +132,8 @@ class ComponentsService(object):
         :rtype: dict
         """
 
-        _, _, components = self.http_client.get(
-            '/pages/{page_id}/components.json'.format(page_id=self.page_id))
+        _, _, components = self.http_client.get(f"/pages/{self.page_id}/components.json")
         return components
-
 
     def create(self, **kwargs):
         """
@@ -148,16 +149,16 @@ class ComponentsService(object):
         :rtype: dict
         """
 
-
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in self.OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in self.OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.post(
-            '/pages/{page_id}/components.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/components.json",
+            container=self.container,
+            body=attributes,
+        )
 
         return component
 
@@ -176,10 +177,9 @@ class ComponentsService(object):
         """
 
         status_code, _, _ = self.http_client.delete(
-            "/pages/{page_id}/components/{component_id}.json".format(
-                page_id=self.page_id, component_id=component_id))
+            f"/pages/{self.page_id}/components/{component_id}.json"
+        )
         return status_code
-
 
     def update(self, component_id, **kwargs):
         """
@@ -197,15 +197,17 @@ class ComponentsService(object):
         """
 
         if not kwargs:
-            raise Exception('attributes for Contact are missing')
+            raise Exception("attributes for Contact are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in self.OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in self.OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.patch(
-            "/pages/{page_id}/components/{component_id}.json".format(
-                page_id=self.page_id, component_id=component_id), container='component', body=attributes)
+            f"/pages/{self.page_id}/components/{component_id}.json",
+            container="component",
+            body=attributes,
+        )
         return component
+
 
 class IncidentsService(object):
     """
@@ -215,7 +217,7 @@ class IncidentsService(object):
     Normally you won't instantiate this class directly.
     """
 
-    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
+    OPTS_KEYS_TO_PERSIST = ["name", "description", "group_id", "status"]
 
     def __init__(self, http_client, page_id):
         """
@@ -224,13 +226,13 @@ class IncidentsService(object):
 
         self.__http_client = http_client
         self.page_id = page_id
-        self.container = 'incident'
+        self.container = "incident"
 
     @property
     def http_client(self):
         return self.__http_client
 
-    def list(self):      
+    def list(self):
         """
         List all incidents
 
@@ -239,8 +241,7 @@ class IncidentsService(object):
         :rtype: dict
         """
 
-        _, _, incidents = self.http_client.get(
-            '/pages/{page_id}/incidents.json'.format(page_id=self.page_id))
+        _, _, incidents = self.http_client.get(f"/pages/{self.page_id}/incidents.json")
         return incidents
 
     def list_unresolved(self):
@@ -252,8 +253,7 @@ class IncidentsService(object):
         :rtype: dict
         """
 
-        _, _, incidents = self.http_client.get(
-            '/pages/{page_id}/incidents/unresolved.json'.format(page_id=self.page_id))
+        _, _, incidents = self.http_client.get(f"/pages/{self.page_id}/incidents/unresolved.json")
         return incidents
 
     def list_scheduled(self):
@@ -264,8 +264,7 @@ class IncidentsService(object):
         :return: Dictionary that support attriubte-style access and represents updated Component resource.
         :rtype: dict
         """
-        _, _, incidents = self.http_client.get(
-            '/pages/{page_id}/incidents/scheduled.json'.format(page_id=self.page_id))
+        _, _, incidents = self.http_client.get(f"/pages/{self.page_id}/incidents/scheduled.json")
         return incidents
 
     def create(self, **kwargs):
@@ -279,22 +278,24 @@ class IncidentsService(object):
         """
 
         OPTS_KEYS_TO_PERSIST = [
-            'name',
-            'status',
-            'message',
-            'wants_twitter_update',
-            'impact_override',
-            'component_ids']
+            "name",
+            "status",
+            "message",
+            "wants_twitter_update",
+            "impact_override",
+            "component_ids",
+        ]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.post(
-            '/pages/{page_id}/incidents.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/incidents.json",
+            container=self.container,
+            body=attributes,
+        )
 
         return component
 
@@ -309,26 +310,28 @@ class IncidentsService(object):
         """
 
         OPTS_KEYS_TO_PERSIST = [
-            'name',
-            'status',
-            'scheduled_for',
-            'scheduled_until',
-            'message',
-            'wants_twitter_update',
-            'scheduled_remind_prior',
-            'scheduled_auto_in_progress',
-            'scheduled_auto_completed',
-            'impact_override',
-            'component_ids']
+            "name",
+            "status",
+            "scheduled_for",
+            "scheduled_until",
+            "message",
+            "wants_twitter_update",
+            "scheduled_remind_prior",
+            "scheduled_auto_in_progress",
+            "scheduled_auto_completed",
+            "impact_override",
+            "component_ids",
+        ]
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, incident = self.http_client.post(
-            '/pages/{page_id}/incidents.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/incidents.json",
+            container=self.container,
+            body=attributes,
+        )
 
         return incident
 
@@ -342,9 +345,9 @@ class IncidentsService(object):
         """
 
         status_code, _, _ = self.http_client.delete(
-            "/pages/{page_id}/incidents/{incident_id}.json".format(
-                page_id=self.page_id, incident_id=incident_id))
-        return status_code 
+            f"/pages/{self.page_id}/incidents/{incident_id}.json"
+        )
+        return status_code
 
     def update(self, incident_id, **kwargs):
         """
@@ -362,23 +365,26 @@ class IncidentsService(object):
 
         """
         OPTS_KEYS_TO_PERSIST = [
-            'name',
-            'status',
-            'message',
-            'wants_twitter_update',
-            'impact_override',
-            'component_ids']
+            "name",
+            "status",
+            "message",
+            "wants_twitter_update",
+            "impact_override",
+            "component_ids",
+        ]
 
         if not kwargs:
-            raise Exception('attributes for Contact are missing')
+            raise Exception("attributes for Contact are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, component = self.http_client.patch(
-            "/pages/{page_id}/incidents/{incident_id}.json".format(
-                page_id=self.page_id, incident_id=incident_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/incidents/{incident_id}.json",
+            container=self.container,
+            body=attributes,
+        )
         return component
+
 
 class SubscribersService(object):
     """
@@ -387,8 +393,8 @@ class SubscribersService(object):
 
     Normally you won't instantiate this class directly.
     """
-    
-    OPTS_KEYS_TO_PERSIST = ['name', 'description', 'group_id', 'status']
+
+    OPTS_KEYS_TO_PERSIST = ["name", "description", "group_id", "status"]
 
     def __init__(self, http_client, page_id):
         """
@@ -397,7 +403,7 @@ class SubscribersService(object):
 
         self.__http_client = http_client
         self.page_id = page_id
-        self.container = 'subscriber'
+        self.container = "subscriber"
 
     @property
     def http_client(self):
@@ -413,8 +419,7 @@ class SubscribersService(object):
         :rtype: dict
         """
 
-        _, _, subscribers = self.http_client.get(
-            '/pages/{page_id}/subscribers.json'.format(page_id=self.page_id))
+        _, _, subscribers = self.http_client.get(f"/pages/{self.page_id}/subscribers.json")
         return subscribers
 
     def create(self, **kwargs):
@@ -428,22 +433,24 @@ class SubscribersService(object):
         """
 
         OPTS_KEYS_TO_PERSIST = [
-            'email',
-            'phone_number',
-            'phone_country',
-            'endpoint',
-            'skip_confirmation_notification',
-            'page_access_user']
+            "email",
+            "phone_number",
+            "phone_country",
+            "endpoint",
+            "skip_confirmation_notification",
+            "page_access_user",
+        ]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, subscriber = self.http_client.post(
-            '/pages/{page_id}/subscribers.json'.format(
-                page_id=self.page_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/subscribers.json",
+            container=self.container,
+            body=attributes,
+        )
 
         return subscriber
 
@@ -458,9 +465,10 @@ class SubscribersService(object):
         """
 
         status_code, _, _ = self.http_client.delete(
-            "/pages/{page_id}/subscribers/{subscriber_id}.json".format(
-                page_id=self.page_id, subscriber_id=subscriber_id))
+            f"/pages/{self.page_id}/subscribers/{subscriber_id}.json"
+        )
         return status_code
+
 
 class MetricsService(object):
     """
@@ -477,7 +485,7 @@ class MetricsService(object):
 
         self.__http_client = http_client
         self.page_id = page_id
-        self.container = 'metric'
+        self.container = "metric"
 
     @property
     def http_client(self):
@@ -491,7 +499,7 @@ class MetricsService(object):
         :rtype: dict
         """
 
-        _, _, providers = self.http_client.get('/metrics_providers.json')
+        _, _, providers = self.http_client.get("/metrics_providers.json")
         return providers
 
     def list_linked(self):
@@ -502,8 +510,7 @@ class MetricsService(object):
         :rtype: dict
         """
 
-        _, _, providers = self.http_client.get(
-            '/pages/{page_id}/metrics_providers.json'.format(page_id=self.page_id))
+        _, _, providers = self.http_client.get(f"/pages/{self.page_id}/metrics_providers.json")
         return providers
 
     def list_metrics_for_provider(self, provider_id=None):
@@ -515,8 +522,8 @@ class MetricsService(object):
         :rtype: dict
         """
         _, _, metrics = self.http_client.get(
-            '/pages/{page_id}/metrics_providers/{metrics_provider_id}/metrics.json'.format(
-                page_id=self.page_id, metrics_provider_id=provider_id))
+            f"/pages/{self.page_id}/metrics_providers/{provider_id}/metrics.json"
+        )
         return metrics
 
     def create(self, provider_id=None, **kwargs):
@@ -531,23 +538,25 @@ class MetricsService(object):
         """
 
         OPTS_KEYS_TO_PERSIST = [
-            'name',
-            'suffix',
-            'display',
-            'tooltip_description',
-            'y_axis_min',
-            'y_axis_max',
-            'decimal_places']
+            "name",
+            "suffix",
+            "display",
+            "tooltip_description",
+            "y_axis_min",
+            "y_axis_max",
+            "decimal_places",
+        ]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, metric = self.http_client.post(
-            '/pages/{page_id}/metrics_providers/{metrics_provider_id}/metrics.json'.format(
-                page_id=self.page_id, metrics_provider_id=provider_id), container=self.container, body=attributes)
+            f"/pages/{self.page_id}/metrics_providers/{provider_id}/metrics.json",
+            container=self.container,
+            body=attributes,
+        )
 
         return metric
 
@@ -562,49 +571,51 @@ class MetricsService(object):
         :rtype: dict
         """
 
-        OPTS_KEYS_TO_PERSIST = ['timestamp', 'value']
+        OPTS_KEYS_TO_PERSIST = ["timestamp", "value"]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, metric = self.http_client.post(
-            '/pages/{page_id}/metrics/{metric_id}/data.json'.format(
-                page_id=self.page_id, metric_id=metric_id), container='data', body=attributes)
+            f"/pages/{self.page_id}/metrics/{metric_id}/data.json",
+            container="data",
+            body=attributes,
+        )
 
         return metric
 
     def delete_all_data(self, metric_id=None):
         """
         Delete All Metric Data
-        
+
         :calls: ``delete /pages/[page_id]/metrics/[metric_id]/data.json``
         :param metric_id: The id of the custom metric.
         :return: Dictionary that support attriubte-style access and represents updated Component resource.
         :rtype: dict
         """
 
-        metric, _, _, = self.http_client.delete(
-            "/pages/{page_id}/metrics/{metric_id}/data.json".format(
-                page_id=self.page_id, metric_id=metric_id))
+        (
+            metric,
+            _,
+            _,
+        ) = self.http_client.delete(f"/pages/{self.page_id}/metrics/{metric_id}/data.json")
         return metric
 
     def delete(self, metric_id=None):
         """
         Delete Custom Metric
-        
+
         :calls: ``delete /pages/[page_id]/metrics/[metric_id].json``
         :param metric_id: The id of the custom metric.
         :return: status code.
         :rtype: int
         """
 
-        _, _, metric = self.http_client.delete(
-            "/pages/{page_id}/metrics/{metric_id}.json".format(
-                page_id=self.page_id, metric_id=metric_id))
+        _, _, metric = self.http_client.delete(f"/pages/{self.page_id}/metrics/{metric_id}.json")
         return metric
+
 
 class UsersService(object):
     """
@@ -613,6 +624,7 @@ class UsersService(object):
 
     Normally you won't instantiate this class directly.
     """
+
     def __init__(self, http_client, organization_id):
         """
         :param :class:`statuspageio.HttpClient` http_client: Pre configured high-level http client.
@@ -620,7 +632,7 @@ class UsersService(object):
 
         self.__http_client = http_client
         self.organization_id = organization_id
-        self.container = 'user'
+        self.container = "user"
 
     @property
     def http_client(self):
@@ -629,9 +641,10 @@ class UsersService(object):
         # the time as many people may not want to manage users.
         if not self.organization_id:
             raise ConfigurationError(
-                'No organization_id provided.'
-                'You are unable to manage users. Set your organization_id during client initialization using: '
-                '"statuspageio.Client(organization_id= <YOUR_PERSONAL_page_id>)"')
+                "No organization_id provided."
+                "You are unable to manage users. Set your organization_id during client initialization using: "
+                '"statuspageio.Client(organization_id= <YOUR_PERSONAL_page_id>)"'
+            )
 
         return self.__http_client
 
@@ -643,37 +656,39 @@ class UsersService(object):
         :rtype: dict
         """
         _, _, users = self.http_client.get(
-            '/organizations/{organization_id}/users.json'.format(
-                organization_id=self.organization_id), container=self.container)
+            f"/organizations/{self.organization_id}/users.json",
+            container=self.container,
+        )
         return users
 
     def create(self, **kwargs):
         """
-        Create a user 
-        
+        Create a user
+
         :calls: ``post /organizations/[organization_id]/users.json``
         :param dict **kwargs:  Users attributes to create.
         :return: Dictionary that support attriubte-style access and represents updated User resource.
         :rtype: dict
         """
-        OPTS_KEYS_TO_PERSIST = ['email', 'password', 'first_name', 'last_name']
+        OPTS_KEYS_TO_PERSIST = ["email", "password", "first_name", "last_name"]
 
         if not kwargs:
-            raise Exception('attributes are missing')
+            raise Exception("attributes are missing")
 
-        attributes = dict((k, v) for k, v in kwargs.iteritems()
-                          if k in OPTS_KEYS_TO_PERSIST)
+        attributes = dict((k, v) for k, v in kwargs.items() if k in OPTS_KEYS_TO_PERSIST)
 
         _, _, user = self.http_client.post(
-            '/organizations/{organization_id}/users.json'.format(
-                organization_id=self.organization_id), container=self.container, body=attributes)
+            f"/organizations/{self.organization_id}/users.json",
+            container=self.container,
+            body=attributes,
+        )
 
         return user
 
     def delete(self, user_id=None):
         """
         Delete a User
-        
+
         :calls: ``delete organizations/[organization_id]/users/[user_id].json``
         :param user_id: The id of the user to delete.
         :return: status code.
@@ -681,6 +696,6 @@ class UsersService(object):
         """
 
         _, _, user = self.http_client.delete(
-            "/organizations/{organization_id}/users/{user_id}.json".format(
-                organization_id=self.organization_id, user_id=user_id))
+            f"/organizations/{self.organization_id}/users/{user_id}.json"
+        )
         return user

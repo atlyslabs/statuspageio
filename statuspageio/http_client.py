@@ -1,6 +1,6 @@
-import requests
 import json
 
+import requests
 from munch import munchify
 
 from statuspageio.errors import RateLimitError, RequestError, ResourceError, ServerError
@@ -14,7 +14,7 @@ class HttpClient(object):
     """
     Supported REST API version prefix.
     """
-    API_VERSION = '/v1'
+    API_VERSION = "/v1"
 
     def __init__(self, config):
         """
@@ -36,7 +36,7 @@ class HttpClient(object):
         :rtype: tuple
         """
 
-        return self.request('get', url, params=params, **kwargs)
+        return self.request("get", url, params=params, **kwargs)
 
     def post(self, url, body=None, **kwargs):
         """
@@ -49,7 +49,7 @@ class HttpClient(object):
         :rtype: tuple
         """
 
-        return self.request('post', url, body=body, **kwargs)
+        return self.request("post", url, body=body, **kwargs)
 
     def put(self, url, body=None, **kwargs):
         """
@@ -62,8 +62,8 @@ class HttpClient(object):
         :rtype: tuple
         """
 
-        return self.request('put', url, body=body, **kwargs)
-    
+        return self.request("put", url, body=body, **kwargs)
+
     def patch(self, url, body=None, **kwargs):
         """
         Send a PATCH request.
@@ -75,8 +75,7 @@ class HttpClient(object):
         :rtype: tuple
         """
 
-        return self.request('patch', url, body=body, **kwargs)
-
+        return self.request("patch", url, body=body, **kwargs)
 
     def delete(self, url, params=None, **kwargs):
         """
@@ -89,10 +88,10 @@ class HttpClient(object):
         :rtype: tuple
         """
 
-        return self.request('delete', url, params=params, **kwargs)
+        return self.request("delete", url, params=params, **kwargs)
 
     def request(self, method, url, params=None, body=None, **kwargs):
-        print method, url, params, body, kwargs
+        print(method, url, params, body, kwargs)
         """
         Send an HTTP request.
 
@@ -119,40 +118,40 @@ class HttpClient(object):
             * :param bool raw: (optional) Whether to wrap and uwrap the envelope. Default: ``False``.
         """
 
-        url = "{base_url}{version}{resource}".format(base_url=self.config.base_url,
-                                                     version=self.API_VERSION,
-                                                     resource=url)
+        url = f"{self.config.base_url}{self.API_VERSION}{url}"
 
-        
         headers = {
-            "Content-Type": "application/x-www-form-urlencoded", 
-            "Authorization": "OAuth " + self.config.api_key
-        }   
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": "OAuth " + self.config.api_key,
+        }
 
         user_headers = {}
-        if  'headers' in kwargs and isinstance(kwargs['headers'], dict):
-            user_headers = kwargs['headers']
+        if "headers" in kwargs and isinstance(kwargs["headers"], dict):
+            user_headers = kwargs["headers"]
 
         headers.update(user_headers)
 
-        raw = bool(kwargs['raw']) if 'raw' in kwargs else False
+        raw = bool(kwargs["raw"]) if "raw" in kwargs else False
 
         if body is not None:
-            headers['Content-Type'] = 'application/json'
-            payload = body if raw else self.wrap_envelope(kwargs['container'],body)
+            headers["Content-Type"] = "application/json"
+            payload = body if raw else self.wrap_envelope(kwargs["container"], body)
             body = json.dumps(payload)
 
-        resp = requests.request(method, url,
-                                params=params,
-                                data=body,
-                                headers=headers,
-                                timeout=float(self.config.timeout),
-                                verify=self.config.verify_ssl)
+        resp = requests.request(
+            method,
+            url,
+            params=params,
+            data=body,
+            headers=headers,
+            timeout=float(self.config.timeout),
+            verify=self.config.verify_ssl,
+        )
 
         if not (200 <= resp.status_code < 300):
             self.handle_error_response(resp)
 
-        if 'Content-Type' in resp.headers and 'json' in resp.headers['Content-Type']:
+        if "Content-Type" in resp.headers and "json" in resp.headers["Content-Type"]:
             resp_body = munchify(resp.json()) if raw else self.unwrap_envelope(resp.json())
         else:
             resp_body = resp.content
@@ -162,11 +161,12 @@ class HttpClient(object):
     def handle_error_response(self, resp):
         try:
             errors = resp.json()
-        except:
-            raise Exception('Unknown HTTP error response. Json expected. '
-                            'HTTP response code={0}. '
-                            'HTTP response body={1}'.format(resp.status_code,
-                                                            resp.text))
+        except:  # noqa E722
+            raise Exception(
+                "Unknown HTTP error response. Json expected. "
+                f"HTTP response code={resp.status_code}. "
+                f"HTTP response body={resp.text}"
+            )
         resp_code = resp.status_code
         if resp_code == 422:
             raise ResourceError(resp_code, errors)
@@ -177,19 +177,20 @@ class HttpClient(object):
         elif 500 <= resp_code < 600:
             raise ServerError(resp_code, errors)
         else:
-            raise Exception('Unknown HTTP error response')
+            raise Exception("Unknown HTTP error response")
 
     @staticmethod
     def wrap_envelope(container, body):
-        """ Wrap the body with the correct container to match the API """
-        return {container : body}
+        """Wrap the body with the correct container to match the API"""
+        return {container: body}
 
     @staticmethod
     def unwrap_envelope(body):
-        return [munchify(item) for item in body['items']] if 'items' in body else munchify(body)
-    
+        return [munchify(item) for item in body["items"]] if "items" in body else munchify(body)
+
     def enable_logging(self):
         import logging
+
         try:
             import http.client as http_client
         except ImportError:

@@ -3,6 +3,7 @@ class ConfigurationError(Exception):
     Exception raised in case of invalid client configuration e.g. no access token provided,
     invalid access token, invalid base url etc.
     """
+
     pass
 
 
@@ -10,6 +11,7 @@ class RateLimitError(Exception):
     """
     Exception raised when the rate limit was exceeded.
     """
+
     pass
 
 
@@ -40,14 +42,14 @@ class BaseError(Exception):
         :param dict errors_payload: Json decoded payload from the errors response.
         """
         self.http_status = http_status
-        print self.http_status
-        print errors_payload
-        
+        print(self.http_status)
+        print(errors_payload)
+
         self.errors = errors_payload
-        #self.errors = [munchify(error_envelope['error'])
+        # self.errors = [munchify(error_envelope['error'])
         #              for error_envelope in errors_payload['errors']]
-        #self.logref = errors_payload['meta']['logref']
-        self.logref = ''
+        # self.logref = errors_payload['meta']['logref']
+        self.logref = ""
 
         message = "\n".join([str(error) for error in self.errors])
         super(BaseError, self).__init__(message)
@@ -58,6 +60,7 @@ class RequestError(BaseError):
     Exception raised if the request was invalid e.g. unknown query parameter,
     invalid request's body envelope etc.
     """
+
     pass
 
 
@@ -65,6 +68,7 @@ class ResourceError(BaseError):
     """
     Exception raised in case of any resource related error.
     """
+
     pass
 
 
@@ -72,4 +76,5 @@ class ServerError(BaseError):
     """
     Exception raised if Base CRM's servers encountered an unexpected condition.
     """
+
     pass
