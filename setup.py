@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="statuspageio",
-    version="0.0.1",
+    version="0.1.0",
     description="StatusPage.io API V1 library client for Python",
     long_description=README,
     author="Grant Delaney",
@@ -19,7 +19,6 @@ setup(
     license="MIT",
     packages=["statuspageio"],
     install_requires=["requests", "munch"],
-    use_2to3=True,
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
