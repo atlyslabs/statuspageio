@@ -11,7 +11,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="statuspageio",
-    version="0.1.0",
+    version="0.1.1",
     description="StatusPage.io API V1 library client for Python",
     long_description=README,
     author="Grant Delaney",
